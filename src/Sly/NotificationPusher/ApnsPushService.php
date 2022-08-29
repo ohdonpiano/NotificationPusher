@@ -33,11 +33,6 @@ class ApnsPushService extends AbstractPushService
     private $passPhrase = '';
 
     /**
-     * @var array
-     */
-    private $feedback = [];
-
-    /**
      * IOSPushNotificationService constructor.
      * @param string $environment
      * @param string $certificatePath
@@ -119,46 +114,8 @@ class ApnsPushService extends AbstractPushService
         $pushes = $pushManager->push();
 
         $this->response = $apnsAdapter->getResponse();
-        $this->feedback = [];
 
         return $this->response;
-    }
-
-    /**
-     * Use feedback to get not registered tokens from last send
-     * and remove them from your DB
-     *
-     * @return array
-     */
-    public function feedback()
-    {
-        $adapterParams = [];
-        $adapterParams['certificate'] = $this->certificatePath;
-        $adapterParams['passPhrase'] = $this->passPhrase;
-
-        // Development one by default (without argument).
-        /** @var PushManager $pushManager */
-        $pushManager = new PushManager($this->environment);
-
-        // Then declare an adapter.
-        $apnsAdapter = new ApnsAdapter($adapterParams);
-
-        $this->feedback = $pushManager->getFeedback($apnsAdapter);
-
-        return $this->feedback;
-    }
-
-    /**
-     * The Apple Push Notification service includes a feedback service to give you information
-     * about failed remote notifications. When a remote notification cannot be delivered
-     * because the intended app does not exist on the device,
-     * the feedback service adds that device’s token to its list.
-     *
-     * @return array
-     */
-    public function getFeedback()
-    {
-        return $this->feedback;
     }
 
     /**
@@ -168,20 +125,15 @@ class ApnsPushService extends AbstractPushService
     {
         if (!$this->response) {
             return [];
+	}
+	$tokens = [];
+        foreach ($this->response->getParsedResponses() as $token => $response) { 
+            if (array_key_exists('token', $response) && $response['token'] === ServiceResponse::RESULT_INVALID_TOKEN) {
+                $tokens[] = $token;
+            }
         }
-
-        if (!$this->feedback) {
-            $this->feedback = $this->feedback();
-        }
-
-        $feedbackTokens = array_keys($this->feedback);
-
-        //all bad
-        if ($feedbackTokens) {
-            return $feedbackTokens;
-        }
-
-        return [];
+ 
+        return $tokens;
     }
 
     /**
@@ -192,21 +144,13 @@ class ApnsPushService extends AbstractPushService
         if (!$this->response) {
             return [];
         }
-
-        if (!$this->feedback) {
-            $this->feedback = $this->feedback();
+        $tokens = [];
+        foreach ($this->response->getParsedResponses() as $token => $response) { 
+            if (array_key_exists('token', $response) && $response['token'] === ServiceResponse::RESULT_OK) {
+                $tokens[] = $token;
+            }
         }
-
-        $feedbackTokens = array_keys($this->feedback);
-        $sentTokens = array_keys($this->response->getParsedResponses());
-
-        //all bad
-        if (!$feedbackTokens) {
-            return $sentTokens;
-        }
-
-        $tokens = array_diff($sentTokens, $feedbackTokens);
-
+ 
         return $tokens;
     }
 }
