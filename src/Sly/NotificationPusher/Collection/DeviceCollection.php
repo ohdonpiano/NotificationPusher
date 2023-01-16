@@ -11,10 +11,11 @@
 
 namespace Sly\NotificationPusher\Collection;
 
+use ArrayIterator;
 use Sly\NotificationPusher\Model\DeviceInterface;
 
 /**
- * @uses \Sly\NotificationPusher\Collection\AbstractCollection
+ * @uses AbstractCollection
  * @uses \IteratorAggregate
  * @author Cédric Dugat <cedric@dugat.me>
  */
@@ -25,7 +26,7 @@ class DeviceCollection extends AbstractCollection
      */
     public function __construct(array $devices = [])
     {
-        $this->coll = new \ArrayIterator();
+        $this->coll = new ArrayIterator();
 
         foreach ($devices as $device) {
             $this->add($device);
@@ -33,9 +34,9 @@ class DeviceCollection extends AbstractCollection
     }
 
     /**
-     * @return \ArrayIterator
+     * @return ArrayIterator
      */
-    public function getIterator()
+    public function getIterator(): ArrayIterator
     {
         return $this->coll;
     }
@@ -51,7 +52,7 @@ class DeviceCollection extends AbstractCollection
     /**
      * @return array
      */
-    public function getTokens()
+    public function getTokens(): array
     {
         $tokens = [];
 

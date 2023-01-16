@@ -19,13 +19,13 @@ interface ResponseInterface
      * @param DeviceInterface $device
      * @param array $response
      */
-    public function addParsedResponse(DeviceInterface $device, $response);
+    public function addParsedResponse(DeviceInterface $device, array $response);
 
     /**
      * @param DeviceInterface $device
      * @param mixed $originalResponse
      */
-    public function addOriginalResponse(DeviceInterface $device, $originalResponse);
+    public function addOriginalResponse(DeviceInterface $device, mixed $originalResponse);
 
     /**
      * @param PushInterface $push Push
@@ -35,15 +35,15 @@ interface ResponseInterface
     /**
      * @return array
      */
-    public function getParsedResponses();
+    public function getParsedResponses(): array;
 
     /**
      * @return mixed
      */
-    public function getOriginalResponses();
+    public function getOriginalResponses(): mixed;
 
     /**
      * @return PushCollection
      */
-    public function getPushCollection();
+    public function getPushCollection(): PushCollection;
 }

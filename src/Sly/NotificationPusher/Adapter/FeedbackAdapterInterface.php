@@ -13,5 +13,8 @@ namespace Sly\NotificationPusher\Adapter;
  */
 interface FeedbackAdapterInterface
 {
-    public function getFeedback();
+    /**
+     * @return array
+     */
+    public function getFeedback(): array;
 }

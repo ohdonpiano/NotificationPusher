@@ -19,12 +19,12 @@ interface MessageInterface
     /**
      * @return string
      */
-    public function getText();
+    public function getText(): string;
 
     /**
      * @param string $text Text
      *
      * @return MessageInterface
      */
-    public function setText($text);
+    public function setText(string $text): MessageInterface;
 }

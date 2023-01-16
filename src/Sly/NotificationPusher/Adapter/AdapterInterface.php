@@ -25,19 +25,19 @@ interface AdapterInterface
      *
      * @return DeviceCollection
      */
-    public function push(PushInterface $push);
+    public function push(PushInterface $push): DeviceCollection;
 
     /**
      * @param string $token Token
      *
      * @return boolean
      */
-    public function supports($token);
+    public function supports(string $token): bool;
 
     /**
      * @return ResponseInterface
      */
-    public function getResponse();
+    public function getResponse(): ResponseInterface;
 
     /**
      * @param ResponseInterface $response
@@ -47,27 +47,27 @@ interface AdapterInterface
     /**
      * @return array
      */
-    public function getDefinedParameters();
+    public function getDefinedParameters(): array;
 
     /**
      * @return array
      */
-    public function getDefaultParameters();
+    public function getDefaultParameters(): array;
 
     /**
      * @return array
      */
-    public function getRequiredParameters();
+    public function getRequiredParameters(): array;
 
     /**
      * @return string
      */
-    public function getEnvironment();
+    public function getEnvironment(): string;
 
     /**
      * @param string $environment Environment value to set
      *
      * @return AdapterInterface
      */
-    public function setEnvironment($environment);
+    public function setEnvironment(string $environment): AdapterInterface;
 }

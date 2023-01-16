@@ -19,17 +19,17 @@ abstract class AbstractPushService
     /**
      * @var string
      */
-    protected $environment;
+    protected string $environment;
 
     /**
-     * @var ResponseInterface
+     * @var ?ResponseInterface
      */
-    protected $response;
+    protected ?ResponseInterface $response = null;
 
     /**
      * @param string $environment
      */
-    public function __construct($environment = PushManager::ENVIRONMENT_DEV)
+    public function __construct(string $environment = PushManager::ENVIRONMENT_DEV)
     {
         $this->environment = $environment;
     }
@@ -37,7 +37,7 @@ abstract class AbstractPushService
     /**
      * @return ResponseInterface
      */
-    public function getResponse()
+    public function getResponse(): ResponseInterface
     {
         return $this->response;
     }

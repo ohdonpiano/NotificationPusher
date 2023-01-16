@@ -19,12 +19,12 @@ abstract class BaseParameteredModel
     /**
      * @var array
      */
-    protected $parameters = [];
+    protected array $parameters = [];
 
     /**
      * @return array
      */
-    public function getParameters()
+    public function getParameters(): array
     {
         return $this->parameters;
     }
@@ -34,18 +34,18 @@ abstract class BaseParameteredModel
      *
      * @return boolean
      */
-    public function hasParameter($key)
+    public function hasParameter(string $key): bool
     {
         return array_key_exists($key, $this->parameters);
     }
 
     /**
      * @param string $key Key
-     * @param mixed $default Default
+     * @param mixed|null $default Default
      *
      * @return mixed
      */
-    public function getParameter($key, $default = null)
+    public function getParameter(string $key, mixed $default = null): mixed
     {
         return $this->hasParameter($key) ? $this->parameters[$key] : $default;
     }
@@ -55,7 +55,7 @@ abstract class BaseParameteredModel
      *
      * @return BaseParameteredModel
      */
-    public function setParameters($parameters)
+    public function setParameters(array $parameters): static
     {
         $this->parameters = $parameters;
 
@@ -68,7 +68,7 @@ abstract class BaseParameteredModel
      *
      * @return mixed
      */
-    public function setParameter($key, $value)
+    public function setParameter(string $key, mixed $value): mixed
     {
         $this->parameters[$key] = $value;
 

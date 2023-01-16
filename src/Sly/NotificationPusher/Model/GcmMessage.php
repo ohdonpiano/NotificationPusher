@@ -8,20 +8,21 @@ class GcmMessage extends Message
     /**
      * @var array
      */
-    private $notificationData = [];
+    private array $notificationData = [];
 
     /**
      * @return array
      */
-    public function getNotificationData()
+    public function getNotificationData(): array
     {
         return $this->notificationData;
     }
 
     /**
      * @param array $notificationData
+     * @noinspection PhpUnused
      */
-    public function setNotificationData($notificationData)
+    public function setNotificationData(array $notificationData)
     {
         $this->notificationData = $notificationData;
     }

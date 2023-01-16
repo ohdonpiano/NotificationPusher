@@ -11,6 +11,7 @@
 
 namespace Sly\NotificationPusher\Adapter;
 
+use ReflectionClass;
 use Sly\NotificationPusher\Model\BaseParameteredModel;
 use Sly\NotificationPusher\Model\Response;
 use Sly\NotificationPusher\Model\ResponseInterface;
@@ -25,17 +26,17 @@ abstract class BaseAdapter extends BaseParameteredModel implements AdapterInterf
     /**
      * @var string
      */
-    protected $adapterKey;
+    protected string $adapterKey;
 
     /**
      * @var string
      */
-    protected $environment;
+    protected string $environment;
 
     /**
      * @var ResponseInterface
      */
-    protected $response;
+    protected ResponseInterface $response;
 
     /**
      * @param array $parameters Adapter specific parameters
@@ -47,7 +48,7 @@ abstract class BaseAdapter extends BaseParameteredModel implements AdapterInterf
         $resolver->setDefaults($this->getDefaultParameters());
         $resolver->setRequired($this->getRequiredParameters());
 
-        $reflectedClass = new \ReflectionClass($this);
+        $reflectedClass = new ReflectionClass($this);
         $this->adapterKey = lcfirst($reflectedClass->getShortName());
         $this->parameters = $resolver->resolve($parameters);
         $this->response = new Response();
@@ -56,7 +57,7 @@ abstract class BaseAdapter extends BaseParameteredModel implements AdapterInterf
     /**
      * @return ResponseInterface
      */
-    public function getResponse()
+    public function getResponse(): ResponseInterface
     {
         return $this->response;
     }
@@ -80,7 +81,7 @@ abstract class BaseAdapter extends BaseParameteredModel implements AdapterInterf
     /**
      * @return string
      */
-    public function getAdapterKey()
+    public function getAdapterKey(): string
     {
         return $this->adapterKey;
     }
@@ -88,7 +89,7 @@ abstract class BaseAdapter extends BaseParameteredModel implements AdapterInterf
     /**
      * @return string
      */
-    public function getEnvironment()
+    public function getEnvironment(): string
     {
         return $this->environment;
     }
@@ -98,7 +99,7 @@ abstract class BaseAdapter extends BaseParameteredModel implements AdapterInterf
      *
      * @return AdapterInterface
      */
-    public function setEnvironment($environment)
+    public function setEnvironment(string $environment): AdapterInterface
     {
         $this->environment = $environment;
 
@@ -106,17 +107,18 @@ abstract class BaseAdapter extends BaseParameteredModel implements AdapterInterf
     }
 
     /**
-     * @return boolean
+     * @return bool
+     * @noinspection PhpUnused
      */
-    public function isDevelopmentEnvironment()
+    public function isDevelopmentEnvironment(): bool
     {
         return (PushManager::ENVIRONMENT_DEV === $this->getEnvironment());
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isProductionEnvironment()
+    public function isProductionEnvironment(): bool
     {
         return (PushManager::ENVIRONMENT_PROD === $this->getEnvironment());
     }

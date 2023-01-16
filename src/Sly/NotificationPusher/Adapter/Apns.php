@@ -11,12 +11,12 @@
 
 namespace Sly\NotificationPusher\Adapter;
 
+use Exception;
 use Sly\NotificationPusher\Collection\DeviceCollection;
 use Sly\NotificationPusher\Exception\AdapterException;
 use Sly\NotificationPusher\Exception\PushException;
 use Sly\NotificationPusher\Model\BaseOptionedModel;
 use Sly\NotificationPusher\Model\DeviceInterface;
-use Sly\NotificationPusher\Model\MessageInterface;
 use Sly\NotificationPusher\Model\PushInterface;
 use ZendService\Apple\Apns\Client\AbstractClient as ServiceAbstractClient;
 use ZendService\Apple\Apns\Client\Feedback as ServiceFeedbackClient;
@@ -27,7 +27,7 @@ use ZendService\Apple\Apns\Response\Feedback;
 use ZendService\Apple\Apns\Response\Message as ServiceResponse;
 
 /**
- * @uses \Sly\NotificationPusher\Adapter\BaseAdapter
+ * @uses BaseAdapter
  *
  * @author Cédric Dugat <cedric@dugat.me>
  */
@@ -37,12 +37,12 @@ class Apns extends BaseAdapter implements FeedbackAdapterInterface
     /**
      * @var ServiceClient
      */
-    private $openedClient;
+    private ServiceClient $openedClient;
 
     /**
      * @var ServiceFeedbackClient
      */
-    private $feedbackClient;
+    private ServiceFeedbackClient $feedbackClient;
 
     /**
      * {@inheritdoc}
@@ -65,7 +65,7 @@ class Apns extends BaseAdapter implements FeedbackAdapterInterface
      *
      * @throws PushException
      */
-    public function push(PushInterface $push)
+    public function push(PushInterface $push): DeviceCollection
     {
         $client = $this->getOpenedServiceClient();
 
@@ -105,8 +105,9 @@ class Apns extends BaseAdapter implements FeedbackAdapterInterface
 
     /**
      * @return array
+     * @throws Exception
      */
-    public function getFeedback()
+    public function getFeedback(): array
     {
         $client = $this->getOpenedFeedbackClient();
         $responses = [];
@@ -123,9 +124,9 @@ class Apns extends BaseAdapter implements FeedbackAdapterInterface
     /**
      * @param ServiceAbstractClient|null $client Client
      *
-     * @return ServiceAbstractClient
+     * @return ServiceAbstractClient|ServiceClient|null
      */
-    public function getOpenedClient(ServiceAbstractClient $client = null)
+    public function getOpenedClient(ServiceAbstractClient $client = null): ServiceAbstractClient|ServiceClient|null
     {
         if (!$client) {
             $client = new ServiceClient();
@@ -141,9 +142,9 @@ class Apns extends BaseAdapter implements FeedbackAdapterInterface
     }
 
     /**
-     * @return ServiceClient
+     * @return ServiceAbstractClient|ServiceClient|null
      */
-    protected function getOpenedServiceClient()
+    protected function getOpenedServiceClient(): ServiceAbstractClient|ServiceClient|null
     {
         if (!isset($this->openedClient)) {
             $this->openedClient = $this->getOpenedClient(new ServiceClient());
@@ -153,9 +154,9 @@ class Apns extends BaseAdapter implements FeedbackAdapterInterface
     }
 
     /**
-     * @return ServiceFeedbackClient
+     * @return ServiceAbstractClient|ServiceClient|ServiceFeedbackClient|null
      */
-    private function getOpenedFeedbackClient()
+    private function getOpenedFeedbackClient(): ServiceAbstractClient|ServiceClient|ServiceFeedbackClient|null
     {
         if (!isset($this->feedbackClient)) {
             $this->feedbackClient = $this->getOpenedClient(new ServiceFeedbackClient());
@@ -166,14 +167,14 @@ class Apns extends BaseAdapter implements FeedbackAdapterInterface
 
     /**
      * @param DeviceInterface $device Device
-     * @param BaseOptionedModel|MessageInterface $message Message
+     * @param BaseOptionedModel $message Message
      *
      * @return ServiceMessage
      */
-    public function getServiceMessageFromOrigin(DeviceInterface $device, BaseOptionedModel $message)
+    public function getServiceMessageFromOrigin(DeviceInterface $device, BaseOptionedModel $message): ServiceMessage
     {
         $badge = ($message->hasOption('badge'))
-            ? (int) ($message->getOption('badge') + $device->getParameter('badge', 0))
+            ? (int)($message->getOption('badge') + $device->getParameter('badge', 0))
             : false;
 
         $sound = $message->getOption('sound');
@@ -255,7 +256,7 @@ class Apns extends BaseAdapter implements FeedbackAdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function supports($token)
+    public function supports(string $token): bool
     {
         return ctype_xdigit($token);
     }
@@ -263,7 +264,7 @@ class Apns extends BaseAdapter implements FeedbackAdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function getDefinedParameters()
+    public function getDefinedParameters(): array
     {
         return [];
     }
@@ -271,7 +272,7 @@ class Apns extends BaseAdapter implements FeedbackAdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function getDefaultParameters()
+    public function getDefaultParameters(): array
     {
         return ['passPhrase' => null];
     }
@@ -279,7 +280,7 @@ class Apns extends BaseAdapter implements FeedbackAdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function getRequiredParameters()
+    public function getRequiredParameters(): array
     {
         return ['certificate', 'bundleId'];
     }

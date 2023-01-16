@@ -19,13 +19,13 @@ class Message extends BaseOptionedModel implements MessageInterface
     /**
      * @var string
      */
-    protected $text;
+    protected string $text;
 
     /**
      * @param string $text Text
      * @param array $options Options
      */
-    public function __construct($text, array $options = [])
+    public function __construct(string $text, array $options = [])
     {
         $this->text = $text;
         $this->options = $options;
@@ -34,7 +34,7 @@ class Message extends BaseOptionedModel implements MessageInterface
     /**
      * @return string
      */
-    public function getText()
+    public function getText(): string
     {
         return $this->text;
     }
@@ -44,7 +44,7 @@ class Message extends BaseOptionedModel implements MessageInterface
      *
      * @return MessageInterface
      */
-    public function setText($text)
+    public function setText(string $text): MessageInterface
     {
         $this->text = $text;
 

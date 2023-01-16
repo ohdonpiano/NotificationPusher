@@ -1,4 +1,6 @@
-<?php
+<?php /** @noinspection PhpUnusedFieldDefaultValueInspection */
+/** @noinspection PhpUnused */
+
 /**
  * Created by PhpStorm.
  * User: seyfer
@@ -8,6 +10,7 @@
 
 namespace Sly\NotificationPusher;
 
+use RuntimeException;
 use Sly\NotificationPusher\Adapter\Gcm as GcmAdapter;
 use Sly\NotificationPusher\Collection\DeviceCollection;
 use Sly\NotificationPusher\Model\Device;
@@ -27,13 +30,13 @@ class GcmPushService extends AbstractPushService
     /**
      * @var string
      */
-    private $apiKey = '';
+    private string $apiKey = '';
 
     /**
      * @param string $environment
      * @param string $apiKey
      */
-    public function __construct($apiKey, $environment = PushManager::ENVIRONMENT_DEV)
+    public function __construct(string $apiKey, string $environment = PushManager::ENVIRONMENT_DEV)
     {
         parent::__construct($environment);
 
@@ -49,9 +52,9 @@ class GcmPushService extends AbstractPushService
      * @param array $tokens List of targets
      * @param array $notifications Message(s) to send to each token
      * @param array $params
-     * @return ResponseInterface
+     * @return ResponseInterface|null
      */
-    public function push(array $tokens = [], array $notifications = [], array $params = [])
+    public function push(array $tokens = [], array $notifications = [], array $params = []): ?ResponseInterface
     {
         if (!$tokens || !$notifications) {
             return null;
@@ -82,7 +85,7 @@ class GcmPushService extends AbstractPushService
         $adapterParams['apiKey'] = $this->apiKey;
 
         if (!$this->apiKey) {
-            throw new \RuntimeException('Android api key must be set');
+            throw new RuntimeException('Android api key must be set');
         }
 
         // Development one by default (without argument).
@@ -92,6 +95,7 @@ class GcmPushService extends AbstractPushService
         $gcmAdapter = new GcmAdapter($adapterParams);
 
         // Set the device(s) to push the notification to.
+        /** @noinspection DuplicatedCode */
         $devices = new DeviceCollection([]);
 
         //devices
@@ -109,6 +113,7 @@ class GcmPushService extends AbstractPushService
         }
 
         // Returns a collection of notified devices
+        /** @noinspection PhpUnusedLocalVariableInspection */
         $pushes = $pushManager->push();
 
         $this->response = $gcmAdapter->getResponse();
@@ -119,7 +124,7 @@ class GcmPushService extends AbstractPushService
     /**
      * @return array
      */
-    public function getInvalidTokens()
+    public function getInvalidTokens(): array
     {
         if (!$this->response) {
             return [];
@@ -139,7 +144,7 @@ class GcmPushService extends AbstractPushService
     /**
      * @return array
      */
-    public function getSuccessfulTokens()
+    public function getSuccessfulTokens(): array
     {
         if (!$this->response) {
             return [];

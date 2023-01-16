@@ -26,7 +26,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * @uses \Symfony\Component\Console\Command\Command
+ * @uses Command
  * @author Cédric Dugat <cedric@dugat.me>
  */
 class PushCommand extends Command
@@ -83,7 +83,7 @@ class PushCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $adapter = $this->getReadyAdapter($input, $output);
         $pushManager = new PushManager($input->getOption('env'));
@@ -102,7 +102,7 @@ class PushCommand extends Command
      *
      * @throws AdapterException When given adapter class doesn't exist
      */
-    private function getAdapterClassFromArgument($argument)
+    private function getAdapterClassFromArgument(string $argument): string
     {
         if (!class_exists($adapterClass = $argument) &&
             !class_exists($adapterClass = '\\Sly\\NotificationPusher\\Adapter\\' . ucfirst($argument))) {
@@ -118,11 +118,13 @@ class PushCommand extends Command
     }
 
     /**
-     * {@inheritdoc}
      *
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @return AdapterInterface
+     * @noinspection PhpUnusedParameterInspection
      */
-    private function getReadyAdapter(InputInterface $input, OutputInterface $output)
+    private function getReadyAdapter(InputInterface $input, OutputInterface $output): AdapterInterface
     {
         $adapterClass = $this->getAdapterClassFromArgument($input->getArgument('adapter'));
 

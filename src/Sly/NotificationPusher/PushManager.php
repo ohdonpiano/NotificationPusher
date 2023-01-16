@@ -11,6 +11,7 @@
 
 namespace Sly\NotificationPusher;
 
+use Exception;
 use Sly\NotificationPusher\Adapter\AdapterInterface;
 use Sly\NotificationPusher\Adapter\FeedbackAdapterInterface;
 use Sly\NotificationPusher\Collection\PushCollection;
@@ -20,7 +21,7 @@ use Sly\NotificationPusher\Model\PushInterface;
 use Sly\NotificationPusher\Model\ResponseInterface;
 
 /**
- * @uses \Sly\NotificationPusher\Collection\PushCollection
+ * @uses PushCollection
  * @author Cédric Dugat <cedric@dugat.me>
  */
 class PushManager
@@ -31,22 +32,22 @@ class PushManager
     /**
      * @var string
      */
-    private $environment;
+    private string $environment;
 
     /**
      * @var PushCollection
      */
-    private $pushCollection;
+    private PushCollection $pushCollection;
 
     /**
      * @var ResponseInterface
      */
-    private $response;
+    private ResponseInterface $response;
 
     /**
      * @param string $environment Environment
      */
-    public function __construct($environment = self::ENVIRONMENT_DEV)
+    public function __construct(string $environment = self::ENVIRONMENT_DEV)
     {
         $this->environment = $environment;
         $this->pushCollection = new PushCollection();
@@ -55,7 +56,7 @@ class PushManager
     /**
      * @param PushInterface $push Push
      */
-    public function add(PushInterface $push)
+    public function add(PushInterface $push): void
     {
         $this->pushCollection->add($push);
     }
@@ -63,15 +64,16 @@ class PushManager
     /**
      * @return string
      */
-    public function getEnvironment()
+    public function getEnvironment(): string
     {
         return $this->environment;
     }
 
     /**
      * @return PushCollection
+     * @throws Exception
      */
-    public function push()
+    public function push(): PushCollection
     {
         /** @var Push $push */
         foreach ($this->pushCollection as $push) {
@@ -83,7 +85,7 @@ class PushManager
             }
         }
 
-        if ($this->pushCollection && !$this->pushCollection->isEmpty()) {
+        if (!$this->pushCollection->isEmpty()) {
             /** @var Push $push */
             $push = $this->pushCollection->first();
             $this->response = $push->getAdapter()->getResponse();
@@ -99,13 +101,13 @@ class PushManager
      *
      * @throws AdapterException When the adapter has no dedicated `getFeedback` method
      */
-    public function getFeedback(AdapterInterface $adapter)
+    public function getFeedback(AdapterInterface $adapter): array
     {
         if (!$adapter instanceof FeedbackAdapterInterface) {
             throw new AdapterException(
                 sprintf(
                     '%s adapter has no dedicated "getFeedback" method',
-                    (string) $adapter
+                    $adapter
                 )
             );
         }
@@ -117,7 +119,7 @@ class PushManager
     /**
      * @return PushCollection
      */
-    public function getPushCollection()
+    public function getPushCollection(): PushCollection
     {
         return $this->pushCollection;
     }
@@ -125,7 +127,7 @@ class PushManager
     /**
      * @return ResponseInterface
      */
-    public function getResponse()
+    public function getResponse(): ResponseInterface
     {
         return $this->response;
     }

@@ -19,13 +19,13 @@ class Device extends BaseParameteredModel implements DeviceInterface
     /**
      * @var string
      */
-    private $token;
+    private string $token;
 
     /**
      * @param string $token Token
      * @param array $parameters Parameters
      */
-    public function __construct($token, array $parameters = [])
+    public function __construct(string $token, array $parameters = [])
     {
         $this->token = $token;
         $this->parameters = $parameters;
@@ -34,7 +34,7 @@ class Device extends BaseParameteredModel implements DeviceInterface
     /**
      * @return string
      */
-    public function getToken()
+    public function getToken(): string
     {
         return $this->token;
     }
@@ -44,7 +44,7 @@ class Device extends BaseParameteredModel implements DeviceInterface
      *
      * @return DeviceInterface
      */
-    public function setToken($token)
+    public function setToken(string $token): DeviceInterface
     {
         $this->token = $token;
 

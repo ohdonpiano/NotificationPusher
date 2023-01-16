@@ -19,12 +19,12 @@ abstract class BaseOptionedModel
     /**
      * @var array
      */
-    protected $options = [];
+    protected array $options = [];
 
     /**
      * @return array
      */
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->options;
     }
@@ -34,18 +34,18 @@ abstract class BaseOptionedModel
      *
      * @return boolean
      */
-    public function hasOption($key)
+    public function hasOption(string $key): bool
     {
         return array_key_exists($key, $this->options);
     }
 
     /**
      * @param string $key Key
-     * @param mixed $default Default
+     * @param mixed|null $default Default
      *
      * @return mixed
      */
-    public function getOption($key, $default = null)
+    public function getOption(string $key, mixed $default = null): mixed
     {
         return $this->hasOption($key) ? $this->options[$key] : $default;
     }
@@ -55,7 +55,7 @@ abstract class BaseOptionedModel
      *
      * @return BaseOptionedModel
      */
-    public function setOptions($options)
+    public function setOptions(array $options): static
     {
         $this->options = $options;
 
@@ -68,7 +68,7 @@ abstract class BaseOptionedModel
      *
      * @return mixed
      */
-    public function setOption($key, $value)
+    public function setOption(string $key, mixed $value): mixed
     {
         $this->options[$key] = $value;
 

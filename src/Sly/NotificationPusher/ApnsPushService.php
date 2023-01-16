@@ -1,4 +1,6 @@
-<?php
+<?php /** @noinspection PhpUnusedFieldDefaultValueInspection */
+/** @noinspection PhpUnused */
+
 /**
  * Created by PhpStorm.
  * User: seyfer
@@ -8,6 +10,8 @@
 
 namespace Sly\NotificationPusher;
 
+use InvalidArgumentException;
+use RuntimeException;
 use Sly\NotificationPusher\Adapter\Apns as ApnsAdapter;
 use Sly\NotificationPusher\Collection\DeviceCollection;
 use Sly\NotificationPusher\Model\Device;
@@ -25,25 +29,25 @@ class ApnsPushService extends AbstractPushService
     /**
      * @var string
      */
-    private $certificatePath = '';
+    private string $certificatePath = '';
 
     /**
      * @var string|null
      */
-    private $passPhrase = '';
+    private ?string $passPhrase = '';
 
     /**
      * @var array
      */
-    private $feedback = [];
+    private array $feedback = [];
 
     /**
      * IOSPushNotificationService constructor.
      * @param string $environment
      * @param string $certificatePath
-     * @param string $passPhrase
+     * @param string|null $passPhrase
      */
-    public function __construct($certificatePath, $passPhrase = null, $environment = PushManager::ENVIRONMENT_DEV)
+    public function __construct(string $certificatePath, string $passPhrase = null, string $environment = PushManager::ENVIRONMENT_DEV)
     {
         parent::__construct($environment);
 
@@ -55,21 +59,22 @@ class ApnsPushService extends AbstractPushService
      * @param array $tokens List of targets
      * @param array $notifications Message(s) to send to each token
      * @param array $params
-     * @return ResponseInterface
+     * @return ResponseInterface|null
+     * @noinspection DuplicatedCode
      */
-    public function push(array $tokens = [], array $notifications = [], array $params = [])
+    public function push(array $tokens = [], array $notifications = [], array $params = []): ?ResponseInterface
     {
         if (!$tokens || !$notifications) {
             return null;
         }
 
         if (!$this->certificatePath) {
-            throw new \RuntimeException('IOS certificate path must be set');
+            throw new RuntimeException('IOS certificate path must be set');
         }
 
         $fs = new Filesystem();
         if (!$fs->exists($this->certificatePath) || !is_readable($this->certificatePath)) {
-            throw new \InvalidArgumentException('Wrong or not readable certificate path');
+            throw new InvalidArgumentException('Wrong or not readable certificate path');
         }
 
         $adapterParams = [];
@@ -116,6 +121,7 @@ class ApnsPushService extends AbstractPushService
         }
 
         // Returns a collection of notified devices
+        /** @noinspection PhpUnusedLocalVariableInspection */
         $pushes = $pushManager->push();
 
         $this->response = $apnsAdapter->getResponse();
@@ -130,14 +136,13 @@ class ApnsPushService extends AbstractPushService
      *
      * @return array
      */
-    public function feedback()
+    public function feedback(): array
     {
         $adapterParams = [];
         $adapterParams['certificate'] = $this->certificatePath;
         $adapterParams['passPhrase'] = $this->passPhrase;
 
         // Development one by default (without argument).
-        /** @var PushManager $pushManager */
         $pushManager = new PushManager($this->environment);
 
         // Then declare an adapter.
@@ -156,7 +161,7 @@ class ApnsPushService extends AbstractPushService
      *
      * @return array
      */
-    public function getFeedback()
+    public function getFeedback(): array
     {
         return $this->feedback;
     }
@@ -164,7 +169,7 @@ class ApnsPushService extends AbstractPushService
     /**
      * @return array
      */
-    public function getInvalidTokens()
+    public function getInvalidTokens(): array
     {
         if (!$this->response) {
             return [];
@@ -187,7 +192,7 @@ class ApnsPushService extends AbstractPushService
     /**
      * @return array
      */
-    public function getSuccessfulTokens()
+    public function getSuccessfulTokens(): array
     {
         if (!$this->response) {
             return [];
@@ -205,6 +210,7 @@ class ApnsPushService extends AbstractPushService
             return $sentTokens;
         }
 
+        /** @noinspection PhpUnnecessaryLocalVariableInspection */
         $tokens = array_diff($sentTokens, $feedbackTokens);
 
         return $tokens;

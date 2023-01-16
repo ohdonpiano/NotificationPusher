@@ -9,6 +9,7 @@
 namespace Sly\NotificationPusher\Model;
 
 
+use InvalidArgumentException;
 use Sly\NotificationPusher\Collection\PushCollection;
 
 /**
@@ -19,17 +20,17 @@ class Response implements ResponseInterface
     /**
      * @var array
      */
-    private $parsedResponses = [];
+    private array $parsedResponses = [];
 
     /**
      * @var array
      */
-    private $originalResponses = [];
+    private array $originalResponses = [];
 
     /**
      * @var PushCollection
      */
-    private $pushCollection;
+    private PushCollection $pushCollection;
 
     public function __construct()
     {
@@ -38,12 +39,12 @@ class Response implements ResponseInterface
 
     /**
      * @param DeviceInterface $device
-     * @param array $response
+     * @param mixed $response
      */
-    public function addParsedResponse(DeviceInterface $device, $response)
+    public function addParsedResponse(DeviceInterface $device, mixed $response)
     {
         if (!is_array($response)) {
-            throw new \InvalidArgumentException('Response must be array type');
+            throw new InvalidArgumentException('Response must be array type');
         }
 
         $this->parsedResponses[$device->getToken()] = $response;
@@ -53,7 +54,7 @@ class Response implements ResponseInterface
      * @param DeviceInterface $device
      * @param mixed $originalResponse
      */
-    public function addOriginalResponse(DeviceInterface $device, $originalResponse)
+    public function addOriginalResponse(DeviceInterface $device, mixed $originalResponse)
     {
         $this->originalResponses[$device->getToken()] = $originalResponse;
     }
@@ -69,7 +70,7 @@ class Response implements ResponseInterface
     /**
      * @return array
      */
-    public function getParsedResponses()
+    public function getParsedResponses(): array
     {
         return $this->parsedResponses;
     }
@@ -77,7 +78,7 @@ class Response implements ResponseInterface
     /**
      * @return mixed
      */
-    public function getOriginalResponses()
+    public function getOriginalResponses(): array
     {
         return $this->originalResponses;
     }
@@ -85,7 +86,7 @@ class Response implements ResponseInterface
     /**
      * @return PushCollection
      */
-    public function getPushCollection()
+    public function getPushCollection(): PushCollection
     {
         return $this->pushCollection;
     }

@@ -25,7 +25,7 @@ class ApnsAPI extends BaseAdapter
      *
      * @return DeviceCollection
      */
-    public function push(PushInterface $push)
+    public function push(PushInterface $push): DeviceCollection
     {
         // TODO: Implement push() method.
     }
@@ -33,9 +33,9 @@ class ApnsAPI extends BaseAdapter
     /**
      * @param string $token Token
      *
-     * @return boolean
+     * @return bool
      */
-    public function supports($token)
+    public function supports(string $token): bool
     {
         // TODO: Implement supports() method.
     }
@@ -43,7 +43,7 @@ class ApnsAPI extends BaseAdapter
     /**
      * @return array
      */
-    public function getDefinedParameters()
+    public function getDefinedParameters(): array
     {
         // TODO: Implement getDefinedParameters() method.
     }
@@ -51,7 +51,7 @@ class ApnsAPI extends BaseAdapter
     /**
      * @return array
      */
-    public function getDefaultParameters()
+    public function getDefaultParameters(): array
     {
         // TODO: Implement getDefaultParameters() method.
     }
@@ -59,7 +59,7 @@ class ApnsAPI extends BaseAdapter
     /**
      * @return array
      */
-    public function getRequiredParameters()
+    public function getRequiredParameters(): array
     {
         // TODO: Implement getRequiredParameters() method.
     }

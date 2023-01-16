@@ -14,21 +14,18 @@ namespace Sly\NotificationPusher\Adapter;
 use InvalidArgumentException;
 use Sly\NotificationPusher\Collection\DeviceCollection;
 use Sly\NotificationPusher\Exception\PushException;
-use Sly\NotificationPusher\Model\BaseOptionedModel;
 use Sly\NotificationPusher\Model\DeviceInterface;
 use Sly\NotificationPusher\Model\GcmMessage;
 use Sly\NotificationPusher\Model\MessageInterface;
 use Sly\NotificationPusher\Model\PushInterface;
-use Zend\Http\Client as HttpClient;
-use Zend\Http\Client\Adapter\Socket as HttpSocketAdapter;
-use ZendService\Google\Exception\InvalidArgumentException as ZendInvalidArgumentException;
+use Laminas\Http\Client as HttpClient;
+use Laminas\Http\Client\Adapter\Socket as HttpSocketAdapter;
 use ZendService\Google\Exception\RuntimeException as ServiceRuntimeException;
-use ZendService\Google\Gcm\Client as ServiceClient;
-use ZendService\Google\Gcm\Message as ServiceMessage;
-use ZendService\Google\Gcm\Response;
+use ZendService\Google\Fcm\Client as ServiceClient;
+use ZendService\Google\Fcm\Message as ServiceMessage;
 
 /**
- * @uses \Sly\NotificationPusher\Adapter\BaseAdapter
+ * @uses BaseAdapter
  *
  * @author Cédric Dugat <cedric@dugat.me>
  */
@@ -37,19 +34,19 @@ class Gcm extends BaseAdapter
     /**
      * @var HttpClient
      */
-    private $httpClient;
+    private HttpClient $httpClient;
 
     /**
      * @var ServiceClient
      */
-    private $openedClient;
+    private ServiceClient $openedClient;
 
     /**
      * {@inheritdoc}
      */
-    public function supports($token)
+    public function supports(string $token): bool
     {
-        return is_string($token) && $token !== '';
+        return !empty($token);
     }
 
     /**
@@ -57,7 +54,7 @@ class Gcm extends BaseAdapter
      *
      * @throws PushException
      */
-    public function push(PushInterface $push)
+    public function push(PushInterface $push): DeviceCollection
     {
         $client = $this->getOpenedClient();
         $pushedDevices = new DeviceCollection();
@@ -68,7 +65,6 @@ class Gcm extends BaseAdapter
 
             try {
 
-                /** @var Response $response */
                 $response = $client->send($message);
                 $responseResults = $response->getResults();
 
@@ -111,7 +107,7 @@ class Gcm extends BaseAdapter
      *
      * @return ServiceClient
      */
-    public function getOpenedClient()
+    public function getOpenedClient(): ServiceClient
     {
         if (!isset($this->openedClient)) {
             $this->openedClient = new ServiceClient();
@@ -135,12 +131,11 @@ class Gcm extends BaseAdapter
      * Get service message from origin.
      *
      * @param array $tokens Tokens
-     * @param BaseOptionedModel|MessageInterface $message Message
+     * @param MessageInterface $message Message
      *
      * @return ServiceMessage
-     * @throws ZendInvalidArgumentException
      */
-    public function getServiceMessageFromOrigin(array $tokens, BaseOptionedModel $message)
+    public function getServiceMessageFromOrigin(array $tokens, MessageInterface $message): ServiceMessage
     {
         $data = $message->getOptions();
         $data['message'] = $message->getText();
@@ -172,7 +167,7 @@ class Gcm extends BaseAdapter
     /**
      * {@inheritdoc}
      */
-    public function getDefinedParameters()
+    public function getDefinedParameters(): array
     {
         return [
             'collapseKey',
@@ -187,7 +182,7 @@ class Gcm extends BaseAdapter
     /**
      * {@inheritdoc}
      */
-    public function getDefaultParameters()
+    public function getDefaultParameters(): array
     {
         return [];
     }
@@ -195,7 +190,7 @@ class Gcm extends BaseAdapter
     /**
      * {@inheritdoc}
      */
-    public function getRequiredParameters()
+    public function getRequiredParameters(): array
     {
         return ['apiKey'];
     }
@@ -204,8 +199,9 @@ class Gcm extends BaseAdapter
      * Get the current Zend Http Client instance.
      *
      * @return HttpClient
+     * @noinspection PhpUnused
      */
-    public function getHttpClient()
+    public function getHttpClient(): HttpClient
     {
         return $this->httpClient;
     }
@@ -214,6 +210,7 @@ class Gcm extends BaseAdapter
      * Overrides the default Http Client.
      *
      * @param HttpClient $client
+     * @noinspection PhpUnused
      */
     public function setHttpClient(HttpClient $client)
     {
@@ -226,6 +223,7 @@ class Gcm extends BaseAdapter
      * @param array $config
      *
      * @throws InvalidArgumentException
+     * @noinspection PhpUnused
      */
     public function setAdapterParameters(array $config = [])
     {
@@ -233,6 +231,7 @@ class Gcm extends BaseAdapter
             throw new InvalidArgumentException('$config must be an associative array with at least 1 item.');
         }
 
+        /** @noinspection PhpConditionAlreadyCheckedInspection */
         if ($this->httpClient === null) {
             $this->httpClient = new HttpClient();
             $this->httpClient->setAdapter(new HttpSocketAdapter());

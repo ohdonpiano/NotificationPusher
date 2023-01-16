@@ -16,7 +16,7 @@ use Sly\NotificationPusher\NotificationPusher;
 use Symfony\Component\Console\Application as BaseApplication;
 
 /**
- * @uses \Symfony\Component\Console\Application
+ * @uses BaseApplication
  * @author Cédric Dugat <cedric@dugat.me>
  */
 class Application extends BaseApplication

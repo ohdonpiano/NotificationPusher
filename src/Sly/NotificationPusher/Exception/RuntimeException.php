@@ -13,7 +13,7 @@ namespace Sly\NotificationPusher\Exception;
 
 /**
  * @uses   \RuntimeException
- * @uses   \Sly\NotificationPusher\Exception\ExceptionInterface
+ * @uses   ExceptionInterface
  *
  * @author Cédric Dugat <cedric@dugat.me>
  */

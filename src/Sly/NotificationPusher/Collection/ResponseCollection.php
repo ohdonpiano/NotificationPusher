@@ -12,11 +12,13 @@
 
 namespace Sly\NotificationPusher\Collection;
 
+use ArrayIterator;
+
 /**
  * Response Collection.
  * is just a container for a response from a push service
  *
- * @uses \Sly\NotificationPusher\Collection\AbstractCollection
+ * @uses AbstractCollection
  * @uses \IteratorAggregate
  * @author Lukas Klinzing <theluk@gmail.com>
  */
@@ -24,13 +26,13 @@ class ResponseCollection extends AbstractCollection
 {
     public function __construct()
     {
-        $this->coll = new \ArrayIterator();
+        $this->coll = new ArrayIterator();
     }
 
     /**
-     * @return \ArrayIterator
+     * @return ArrayIterator
      */
-    public function getIterator()
+    public function getIterator(): ArrayIterator
     {
         return $this->coll;
     }
@@ -39,7 +41,7 @@ class ResponseCollection extends AbstractCollection
      * @param string $token
      * @param mixed $response
      */
-    public function add($token, $response)
+    public function add(string $token, mixed $response)
     {
         $this->coll[$token] = $response;
     }

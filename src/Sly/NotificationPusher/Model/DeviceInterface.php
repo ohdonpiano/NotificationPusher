@@ -19,12 +19,12 @@ interface DeviceInterface
     /**
      * @return string
      */
-    public function getToken();
+    public function getToken(): string;
 
     /**
      * @param string $token Token
      *
      * @return DeviceInterface
      */
-    public function setToken($token);
+    public function setToken(string $token): DeviceInterface;
 }

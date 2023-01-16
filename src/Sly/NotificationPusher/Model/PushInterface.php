@@ -27,81 +27,81 @@ interface PushInterface
     /**
      * @return string
      */
-    public function getStatus();
+    public function getStatus(): string;
 
     /**
      * @param string $status Status
      *
      * @return PushInterface
      */
-    public function setStatus($status);
+    public function setStatus(string $status): PushInterface;
 
     /**
      * @return boolean
      */
-    public function isPushed();
+    public function isPushed(): bool;
 
     /**
      * @return PushInterface
      */
-    public function pushed();
+    public function pushed(): PushInterface;
 
     /**
      * @return AdapterInterface
      */
-    public function getAdapter();
+    public function getAdapter(): AdapterInterface;
 
     /**
      * @param AdapterInterface $adapter Adapter
      *
      * @return PushInterface
      */
-    public function setAdapter(AdapterInterface $adapter);
+    public function setAdapter(AdapterInterface $adapter): PushInterface;
 
     /**
      * @return MessageInterface
      */
-    public function getMessage();
+    public function getMessage(): MessageInterface;
 
     /**
      * @param MessageInterface $message Message
      *
      * @return PushInterface
      */
-    public function setMessage(MessageInterface $message);
+    public function setMessage(MessageInterface $message): PushInterface;
 
     /**
      * @return DeviceCollection
      */
-    public function getDevices();
+    public function getDevices(): DeviceCollection;
 
     /**
      * @param DeviceCollection $devices Devices
      *
      * @return PushInterface
      */
-    public function setDevices(DeviceCollection $devices);
+    public function setDevices(DeviceCollection $devices): PushInterface;
 
     /**
      * @return ResponseCollection
      */
-    public function getResponses();
+    public function getResponses(): ResponseCollection;
 
     /**
      * @param DeviceInterface $device
      * @param mixed $response
      */
-    public function addResponse(DeviceInterface $device, $response);
+    public function addResponse(DeviceInterface $device, mixed $response);
 
     /**
      * @return DateTime
      */
-    public function getPushedAt();
+    public function getPushedAt(): DateTime;
 
     /**
      * @param DateTime $pushedAt PushedAt
      *
      * @return PushInterface
      */
-    public function setPushedAt(DateTime $pushedAt);
+    public function setPushedAt(DateTime $pushedAt): PushInterface;
 }

@@ -11,6 +11,7 @@
 
 namespace Sly\NotificationPusher\Model;
 
+use DateTime;
 use Sly\NotificationPusher\Adapter\AdapterInterface;
 use Sly\NotificationPusher\Collection\DeviceCollection;
 use Sly\NotificationPusher\Collection\ResponseCollection;
@@ -25,36 +26,36 @@ class Push extends BaseOptionedModel implements PushInterface
     /**
      * @var string
      */
-    private $status;
+    private string $status;
 
     /**
      * @var AdapterInterface
      */
-    private $adapter;
+    private AdapterInterface $adapter;
 
     /**
      * @var MessageInterface
      */
-    private $message;
+    private MessageInterface $message;
 
     /**
      * @var DeviceCollection
      */
-    private $devices;
+    private DeviceCollection $devices;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
-    private $pushedAt;
+    private DateTime $pushedAt;
 
     /**
-     * @var ResponseCollection
+     * @var ?ResponseCollection
      */
-    private $responses;
+    private ?ResponseCollection $responses = null;
 
     /**
      * @param AdapterInterface $adapter Adapter
-     * @param DeviceInterface|DeviceCollection $devices Device(s)
+     * @param DeviceCollection|DeviceInterface $devices Device(s)
      * @param MessageInterface $message Message
      * @param array $options Options
      *
@@ -63,7 +64,7 @@ class Push extends BaseOptionedModel implements PushInterface
      *
      * @throws AdapterException
      */
-    public function __construct(AdapterInterface $adapter, $devices, MessageInterface $message, array $options = [])
+    public function __construct(AdapterInterface $adapter, DeviceInterface|DeviceCollection $devices, MessageInterface $message, array $options = [])
     {
         if ($devices instanceof DeviceInterface) {
             $devices = new DeviceCollection([$devices]);
@@ -91,7 +92,7 @@ class Push extends BaseOptionedModel implements PushInterface
                 throw new AdapterException(
                     sprintf(
                         'Adapter %s does not support %s token\'s device',
-                        (string) $adapter,
+                        $adapter,
                         $device->getToken()
                     )
                 );
@@ -102,7 +103,7 @@ class Push extends BaseOptionedModel implements PushInterface
     /**
      * @return string
      */
-    public function getStatus()
+    public function getStatus(): string
     {
         return $this->status;
     }
@@ -112,7 +113,7 @@ class Push extends BaseOptionedModel implements PushInterface
      *
      * @return PushInterface
      */
-    public function setStatus($status)
+    public function setStatus(string $status): PushInterface
     {
         $this->status = $status;
 
@@ -120,20 +121,20 @@ class Push extends BaseOptionedModel implements PushInterface
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isPushed()
+    public function isPushed(): bool
     {
-        return (bool) (self::STATUS_PUSHED === $this->status);
+        return self::STATUS_PUSHED === $this->status;
     }
 
     /**
      * @return PushInterface
      */
-    public function pushed()
+    public function pushed(): PushInterface
     {
         $this->status = self::STATUS_PUSHED;
-        $this->pushedAt = new \DateTime();
+        $this->pushedAt = new DateTime();
 
         return $this;
     }
@@ -141,7 +142,7 @@ class Push extends BaseOptionedModel implements PushInterface
     /**
      * @return AdapterInterface
      */
-    public function getAdapter()
+    public function getAdapter(): AdapterInterface
     {
         return $this->adapter;
     }
@@ -151,7 +152,7 @@ class Push extends BaseOptionedModel implements PushInterface
      *
      * @return PushInterface
      */
-    public function setAdapter(AdapterInterface $adapter)
+    public function setAdapter(AdapterInterface $adapter): PushInterface
     {
         $this->adapter = $adapter;
 
@@ -161,7 +162,7 @@ class Push extends BaseOptionedModel implements PushInterface
     /**
      * @return MessageInterface
      */
-    public function getMessage()
+    public function getMessage(): MessageInterface
     {
         return $this->message;
     }
@@ -171,7 +172,7 @@ class Push extends BaseOptionedModel implements PushInterface
      *
      * @return PushInterface
      */
-    public function setMessage(MessageInterface $message)
+    public function setMessage(MessageInterface $message): PushInterface
     {
         $this->message = $message;
 
@@ -181,7 +182,7 @@ class Push extends BaseOptionedModel implements PushInterface
     /**
      * @return DeviceCollection
      */
-    public function getDevices()
+    public function getDevices(): DeviceCollection
     {
         return $this->devices;
     }
@@ -191,7 +192,7 @@ class Push extends BaseOptionedModel implements PushInterface
      *
      * @return PushInterface
      */
-    public function setDevices(DeviceCollection $devices)
+    public function setDevices(DeviceCollection $devices): PushInterface
     {
         $this->devices = $devices;
 
@@ -203,7 +204,7 @@ class Push extends BaseOptionedModel implements PushInterface
     /**
      * @return ResponseCollection
      */
-    public function getResponses()
+    public function getResponses(): ResponseCollection
     {
         if (!$this->responses)
             $this->responses = new ResponseCollection();
@@ -215,25 +216,25 @@ class Push extends BaseOptionedModel implements PushInterface
      * @param DeviceInterface $device
      * @param mixed $response
      */
-    public function addResponse(DeviceInterface $device, $response)
+    public function addResponse(DeviceInterface $device, mixed $response)
     {
         $this->getResponses()->add($device->getToken(), $response);
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getPushedAt()
+    public function getPushedAt(): DateTime
     {
         return $this->pushedAt;
     }
 
     /**
-     * @param \DateTime $pushedAt PushedAt
+     * @param DateTime $pushedAt PushedAt
      *
      * @return PushInterface
      */
-    public function setPushedAt(\DateTime $pushedAt)
+    public function setPushedAt(DateTime $pushedAt): PushInterface
     {
         $this->pushedAt = $pushedAt;
 
